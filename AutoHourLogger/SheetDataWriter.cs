@@ -6,27 +6,35 @@ using Google.Apis.Sheets.v4.Data;
 
 namespace AutoHourLogger
 {
-    public static class SheetDataWriter
+    public class SheetDataWriter
     {
-        public static void WriteToSheet(SheetsService service)
-        {
-            string spreadsheetId = ConfigurationManager.AppSettings["SheetId"];
-            string inputValue = ConfigurationManager.AppSettings["InputValue"]; 
+        private readonly string _sheetId;
+        private readonly string _sheetName;
+        private readonly string _valueToWrite;
+        private readonly string _sheetCellNumber;
 
-            String range = GetTabAndCell();
+
+        public SheetDataWriter(string sheetId, string sheetName, string valueToWrite, string sheetCellNumber)
+        {
+            _sheetId = sheetId;
+            _sheetName = sheetName;
+            _valueToWrite = valueToWrite;
+            _sheetCellNumber = sheetCellNumber;
+        }
+
+        public void WriteToSheet(SheetsService service)
+        {
+            String range = _sheetName + "!" + _sheetCellNumber; // "Basic!B111";
             ValueRange valueRange = new ValueRange { MajorDimension = "COLUMNS" };
 
 
-            var oblist = new List<object>() { inputValue };
+            var oblist = new List<object>() { _valueToWrite };
             valueRange.Values = new List<IList<object>> { oblist };
 
-            SpreadsheetsResource.ValuesResource.UpdateRequest update = service.Spreadsheets.Values.Update(valueRange, spreadsheetId, range);
+            SpreadsheetsResource.ValuesResource.UpdateRequest update = service.Spreadsheets.Values.Update(valueRange, _sheetId, range);
             update.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
-            UpdateValuesResponse result2 = update.Execute();
-        }
-        private static string GetTabAndCell()
-        {
-            return "Basic!B111";
+            UpdateValuesResponse result = update.Execute();
+            Console.WriteLine("{0} is updated to {1}",result.UpdatedRange, result.UpdatedData);
         }
     }
 }

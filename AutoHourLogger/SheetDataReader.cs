@@ -1,62 +1,69 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 
 namespace AutoHourLogger
 {
-    public static class SheetDataReader
+    public class SheetDataReader
     {
-        public static string TargetString { get; set; }
-        public static void ReadData(SheetsService service)
-        {
-            TargetString = "Abcd";
-            // Define request parameters.
-            // Call them from main
-            string spreadsheetId = ConfigurationManager.AppSettings["SheetId"];
-            string range = ConfigurationManager.AppSettings["ReaderRange"];
-            string sheetName = ConfigurationManager.AppSettings["SheetName"];
+        private readonly string _spreadsheetId;
+        private readonly string _sheetName;
+        private readonly string _range;
 
-            SpreadsheetsResource.ValuesResource.GetRequest request = service.Spreadsheets.Values.Get(spreadsheetId, sheetName + "!"+range);
+        public SheetDataReader(string spreadsheetId, string sheetName, string range)
+        {
+            _range = range;
+            _spreadsheetId = spreadsheetId;
+            _sheetName = sheetName;
+        }
+
+        public IList<IList<object>> ReadData(SheetsService service)
+        {
+            SpreadsheetsResource.ValuesResource.GetRequest request = service.Spreadsheets.Values.Get(_spreadsheetId, _sheetName + "!"+_range);
 
             ValueRange response = request.Execute();
             IList<IList<object>> values = response.Values;
-            if (values != null && values.Count > 0)
-            {
-                FindCell(values, TargetString);
-            }
-            else
-            {
-                Console.WriteLine("No data found.");
-            }
-        }
 
-        private static string FindCell(IList<IList<object>> values, string targetString)
+            return values;
+        }
+        
+
+        public string FindCell(IList<IList<object>> values, string targetString)
         {
+
+            if(values ==null || values.Count == 0)
+                throw new Exception("No data found in sheet.");
+
             int rowNumber = 0;
             foreach (var row in values)
             {
-                // Find the desired string and calculate the cell number/range
-                for (int i = 0; i < row.Count; i++)
+                for (int columnNumber = 0; columnNumber < row.Count; columnNumber++)
                 {
-                    
-                    if ((string) row[i] == targetString)
+
+                    if ((string)row[columnNumber] == targetString)
                     {
-                        return CalculateCell(rowNumber, i);
+                        return CalculateCell(rowNumber, columnNumber);
                     }
                 }
                 rowNumber++;
-                Console.WriteLine("{0}, {1}", row[0], row[4]);
-                
             }
+
             return null;
+
         }
 
-        private static string CalculateCell(int rowNumber, int i)
+        private string CalculateCell(int rowNumber, int columnNumber)
         {
-            return "A2:B";
+            var rowAndColumn = Helper.GetRowAndColumnNumber(_range.Split(':').ToArray()[0]);
 
+            int row  = int.Parse(rowAndColumn.Split('|').ToArray()[0]);
+            int column = int.Parse(rowAndColumn.Split('|').ToArray()[1]);
+
+            return Helper.GetCellNumber(rowNumber+row, columnNumber+column);
         }
+        
     }
 }

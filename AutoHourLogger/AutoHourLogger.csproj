@@ -76,6 +76,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper.cs" />
     <Compile Include="SheetDataReader.cs" />
     <Compile Include="SheetDataWriter.cs" />
     <Compile Include="UserAuthentication.cs" />
