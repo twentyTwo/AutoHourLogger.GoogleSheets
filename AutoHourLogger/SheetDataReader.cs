@@ -57,10 +57,10 @@ namespace AutoHourLogger
 
         private string CalculateCell(int rowNumber, int columnNumber)
         {
-            var rowAndColumn = Helper.GetRowAndColumnNumber(_range.Split(':').ToArray()[0]);
+            var rowAndColumn = Helper.GetRowAndColumnNumber(this._range.Split(':').ToArray()[0]);
 
-            int row  = int.Parse(rowAndColumn.Split('|').ToArray()[0]);
-            int column = int.Parse(rowAndColumn.Split('|').ToArray()[1]);
+            var row = rowAndColumn.RowNumber;
+            var column = rowAndColumn.ColumnNumber;
 
             return Helper.GetCellNumber(rowNumber+row, columnNumber+column);
         }

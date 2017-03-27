@@ -6,15 +6,21 @@ using Google.Apis.Sheets.v4;
 
 namespace AutoHourLogger
 {
+    using System.Globalization;
+
     internal class Program
     {
         private static void Main(string[] args)
         {
+
+            var searchValue = "Lecture 103";
+            var whatTowrite = DateTime.Today.ToString(CultureInfo.InvariantCulture);
+
             var spreadsheetId = ConfigurationManager.AppSettings["SheetId"];
             var sheetName = ConfigurationManager.AppSettings["SheetName"];
             var range = ConfigurationManager.AppSettings["ReaderRange"];
 
-            var searchValue = "Lecture 103";
+
 
 
             string[] _scopes = {SheetsService.Scope.Spreadsheets};
@@ -30,17 +36,18 @@ namespace AutoHourLogger
             });
 
 
+            // Read data and find the cell with search text
+
             var dataReader = new SheetDataReader(spreadsheetId, sheetName, range);
             var values = dataReader.ReadData(service);
-            var sheetCell = dataReader.FindCell(values, searchValue);
+            var sheetCellNumber = dataReader.FindCell(values, searchValue);
 
 
-            var rc = Helper.GetRowAndColumnNumber(sheetCell);
-            var newCell = Helper.GetCellNumber(int.Parse(rc.Split('|').ToArray()[0]) + 1,
-                int.Parse(rc.Split('|').ToArray()[1]));
+            var rc = Helper.GetRowAndColumnNumber(sheetCellNumber);
+            var cellToWrite = Helper.GetCellNumber(rc.RowNumber + 1, rc.ColumnNumber); 
 
 
-            var dataWriter = new SheetDataWriter(spreadsheetId, sheetName, "123:254", newCell);
+            var dataWriter = new SheetDataWriter(spreadsheetId, sheetName, cellToWrite, whatTowrite);
             dataWriter.WriteToSheet(service);
 
 

@@ -29,9 +29,9 @@ namespace AutoHourLogger
                 column /= 26;
             }
 
-            return String.Format("{0}{1}", columnSheet, row);
+            return $"{columnSheet}{row}";
         }
-        public static string GetRowAndColumnNumber(string sheetCellNumber)
+        public static SheetCellNumeric GetRowAndColumnNumber(string sheetCellNumber)
         {
             var i = 0;
 
@@ -58,7 +58,21 @@ namespace AutoHourLogger
                 column += cc * multi;
             }
 
-            return string.Format("{0}|{1}", row, column);
+            return new SheetCellNumeric
+            {
+                RowNumber = int.Parse(row),
+                ColumnNumber = column
+            };
+
+
+        }
+
+        public class SheetCellNumeric
+        {
+            public int RowNumber;
+
+            public int ColumnNumber;
+
         }
     }
 }
