@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AutoHourLogger
 {
@@ -14,7 +11,7 @@ namespace AutoHourLogger
 
             while (column > 0)
             {
-                var cm = column % 26;
+                var cm = column%26;
 
                 if (cm == 0)
                 {
@@ -23,7 +20,7 @@ namespace AutoHourLogger
                 }
                 else
                 {
-                    columnSheet.Insert(0, (char)(cm + 'A' - 1));
+                    columnSheet.Insert(0, (char) (cm + 'A' - 1));
                 }
 
                 column /= 26;
@@ -31,6 +28,7 @@ namespace AutoHourLogger
 
             return $"{columnSheet}{row}";
         }
+
         public static SheetCellNumeric GetRowAndColumnNumber(string sheetCellNumber)
         {
             var i = 0;
@@ -49,13 +47,13 @@ namespace AutoHourLogger
             var cs = sheetCellNumber.Substring(0, i);
             var csl = cs.Length - 1;
 
-            for (int j = 0; j < cs.Length; j++)
+            for (var j = 0; j < cs.Length; j++)
             {
                 var cc = cs[j] - 'A' + 1;
 
-                var multi = (int)Math.Pow(26, csl--);
+                var multi = (int) Math.Pow(26, csl--);
 
-                column += cc * multi;
+                column += cc*multi;
             }
 
             return new SheetCellNumeric
@@ -63,16 +61,12 @@ namespace AutoHourLogger
                 RowNumber = int.Parse(row),
                 ColumnNumber = column
             };
-
-
         }
 
         public class SheetCellNumeric
         {
-            public int RowNumber;
-
             public int ColumnNumber;
-
+            public int RowNumber;
         }
     }
 }

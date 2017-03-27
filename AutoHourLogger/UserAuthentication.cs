@@ -14,7 +14,7 @@ namespace AutoHourLogger
 
             using (var stream = new FileStream("client_secret.json", FileMode.Open, FileAccess.Read))
             {
-                string credPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+                var credPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
                 credPath = Path.Combine(credPath, ".credentials/sheets.googleapis.com-dotnet-quickstart.json");
                 credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                     GoogleClientSecrets.Load(stream).Secrets,
@@ -26,7 +26,6 @@ namespace AutoHourLogger
             }
 
             return credential;
-
         }
     }
 }
