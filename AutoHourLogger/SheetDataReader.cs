@@ -22,6 +22,7 @@ namespace AutoHourLogger
 
         public IList<IList<object>> ReadData()
         {
+            
             var request = _service.Spreadsheets.Values.Get(_spreadsheetId, _sheetName + "!" + _range);
 
             var response = request.Execute();
@@ -33,7 +34,7 @@ namespace AutoHourLogger
         public string FindCell(IList<IList<object>> values, string targetString)
         {
             if (values == null || values.Count == 0)
-                throw new Exception("No data found in sheet.");
+                return null;
 
             var rowNumber = 0;
             foreach (var row in values)

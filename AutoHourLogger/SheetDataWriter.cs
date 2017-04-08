@@ -18,19 +18,29 @@ namespace AutoHourLogger
             _sheetName = sheetName;
         }
 
-        public void WriteToSheet(string sheetCellNumber, string valueToWrite)
+        public UpdateValuesResponse WriteToSheet(string sheetCellNumber, string valueToWrite)
         {
-            var range = _sheetName + "!" + sheetCellNumber; // "Basic!B111";
-            var valueRange = new ValueRange {MajorDimension = "COLUMNS"};
+            try
+            {
+                var range = _sheetName + "!" + sheetCellNumber; // "Basic!B111";
+                var valueRange = new ValueRange { MajorDimension = "COLUMNS" };
 
 
-            var objectList = new List<object> {valueToWrite};
-            valueRange.Values = new List<IList<object>> {objectList};
+                var objectList = new List<object> { valueToWrite };
+                valueRange.Values = new List<IList<object>> { objectList };
 
-            var update = _service.Spreadsheets.Values.Update(valueRange, _sheetId, range);
-            update.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
-            var result = update.Execute();
-            Console.WriteLine("Cell {0} is updated", result.UpdatedRange);
+                var update = _service.Spreadsheets.Values.Update(valueRange, _sheetId, range);
+                update.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
+                return update.Execute();
+                
+            }
+            catch (Exception )
+            {
+                
+                throw new Exception("Error in writting data");
+            }
+
+            
         }
     }
 }
