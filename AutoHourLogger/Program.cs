@@ -12,13 +12,24 @@ namespace AutoHourLogger
         {
             try
             {
-
-                var searchValue = "Lecture 103";
-                var whatTowrite = DateTime.Today.ToString(CultureInfo.InvariantCulture);
-
                 var spreadsheetId = ConfigurationManager.AppSettings["SheetId"];
                 var sheetName = ConfigurationManager.AppSettings["SheetName"];
                 var range = ConfigurationManager.AppSettings["ReaderRange"];
+                var dateFormat = ConfigurationManager.AppSettings["DateFormat"];
+                var timeToWrite = ConfigurationManager.AppSettings["Time"];
+
+
+                var searchValue = DateTime.Now.ToString(dateFormat);
+
+                TimeSpan time;
+                if (!TimeSpan.TryParse(timeToWrite, out time))
+                {
+                    throw new Exception("Time in the settings can not converted to time duration.");
+                }
+
+                var whatTowrite = time;
+
+
 
 
                 string[] scopes = { SheetsService.Scope.Spreadsheets };
@@ -71,6 +82,8 @@ namespace AutoHourLogger
                 Console.WriteLine($"Sheet reading is not successfull.\n{exception.Message}");
                 
             }
+
+            Console.ReadKey();
 
         }
     }

@@ -18,7 +18,7 @@ namespace AutoHourLogger
             _sheetName = sheetName;
         }
 
-        public UpdateValuesResponse WriteToSheet(string sheetCellNumber, string valueToWrite)
+        public UpdateValuesResponse WriteToSheet(string sheetCellNumber, TimeSpan valueToWrite)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace AutoHourLogger
                 valueRange.Values = new List<IList<object>> { objectList };
 
                 var update = _service.Spreadsheets.Values.Update(valueRange, _sheetId, range);
-                update.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
+                update.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
                 return update.Execute();
                 
             }
