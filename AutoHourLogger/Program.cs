@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Configuration;
-using System.Globalization;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 
@@ -30,9 +29,7 @@ namespace AutoHourLogger
                 var whatTowrite = time;
 
 
-
-
-                string[] scopes = { SheetsService.Scope.Spreadsheets };
+                string[] scopes = {SheetsService.Scope.Spreadsheets};
                 var ApplicationName = "Google Sheet Auto Hour Logger";
 
                 var credential = UserAuthentication.Authenticate(scopes);
@@ -48,21 +45,22 @@ namespace AutoHourLogger
                 // Read data and find the cell with search text.
 
                 var dataReader = new SheetDataReader(service, spreadsheetId, sheetName, range);
-                var sheetData = dataReader.ReadData();
+                var sheetDataTask = dataReader.ReadDataAsync();
+                var sheetData = sheetDataTask.Result;
+
 
                 if (sheetData != null)
                 {
                     var sheetCellNumber = dataReader.FindCell(sheetData, searchValue);
 
-                    if (sheetCellNumber!=null)
+                    if (sheetCellNumber != null)
                     {
                         var rc = Helper.GetRowAndColumnNumber(sheetCellNumber);
                         var cellToWrite = Helper.GetCellNumber(rc.RowNumber + 1, rc.ColumnNumber);
 
                         var dataWriter = new SheetDataWriter(service, spreadsheetId, sheetName);
-                        var result = dataWriter.WriteToSheet(cellToWrite, whatTowrite);
-                        Console.WriteLine($"{result.UpdatedData} is updated in {result.UpdatedCells}");
-
+                        var result = dataWriter.WriteToSheetAsync(cellToWrite, whatTowrite);
+                        Console.WriteLine($"{result.Result} is updated");
                     }
                     else
                     {
@@ -74,17 +72,14 @@ namespace AutoHourLogger
                     Console.WriteLine("Sheet is empty");
                 }
 
-                Console.WriteLine("Data written successfully");              
-
+                Console.WriteLine("Data written successfully");
             }
             catch (Exception exception)
             {
                 Console.WriteLine($"Sheet reading is not successfull.\n{exception.Message}");
-                
             }
 
             Console.ReadKey();
-
         }
     }
 }

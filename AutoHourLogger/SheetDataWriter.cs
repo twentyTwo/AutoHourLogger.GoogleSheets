@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 
@@ -18,7 +19,7 @@ namespace AutoHourLogger
             _sheetName = sheetName;
         }
 
-        public UpdateValuesResponse WriteToSheet(string sheetCellNumber, TimeSpan valueToWrite)
+        public async Task<UpdateValuesResponse> WriteToSheetAsync(string sheetCellNumber, TimeSpan valueToWrite)
         {
             try
             {
@@ -31,13 +32,14 @@ namespace AutoHourLogger
 
                 var update = _service.Spreadsheets.Values.Update(valueRange, _sheetId, range);
                 update.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
-                return update.Execute();
+
+                return await update.ExecuteAsync();
                 
             }
             catch (Exception )
             {
                 
-                throw new Exception("Error in writting data");
+                throw new Exception("Error in writing data");
             }
 
             

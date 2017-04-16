@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Google.Apis.Sheets.v4;
 
 namespace AutoHourLogger
@@ -20,15 +21,21 @@ namespace AutoHourLogger
             _sheetName = sheetName;
         }
 
-        public IList<IList<object>> ReadData()
+        public async Task<IList<IList<object>>> ReadDataAsync()
         {
-            
-            var request = _service.Spreadsheets.Values.Get(_spreadsheetId, _sheetName + "!" + _range);
+            try
+            {
+                var request = _service.Spreadsheets.Values.Get(_spreadsheetId, _sheetName + "!" + _range);
 
-            var response = request.Execute();
-            var values = response.Values;
+                var response = await request.ExecuteAsync();
+                return response.Values;
+            }
+            catch (Exception)
+            {
+                
+                throw new Exception("Error in reading data");
+            }
 
-            return values;
         }
 
         public string FindCell(IList<IList<object>> values, string targetString)
