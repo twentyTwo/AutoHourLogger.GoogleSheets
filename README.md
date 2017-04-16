@@ -1,3 +1,8 @@
+## Googlesheet Auto Hor Logger
+This application automatically log hours in everyday basis to a google sheet.
+
+
+
 ## Step 1: Turn on the Google Sheets API
 
 1. Use  [this wizard](https://console.developers.google.com/start/api?id=sheets.googleapis.com) to create or select a project in the Google Developers Console and automatically turn on the API. Click  **Continue** , then  **Go to credentials**.
