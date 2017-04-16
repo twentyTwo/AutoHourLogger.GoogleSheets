@@ -1,4 +1,4 @@
-## Googlesheet Auto Hor Logger
+## Googlesheet Auto Hour Logger
 This application automatically log hours in everyday basis to a google sheet.
 
 
