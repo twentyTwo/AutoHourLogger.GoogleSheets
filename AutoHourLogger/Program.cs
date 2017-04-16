@@ -1,10 +1,18 @@
-﻿using System;
-using System.Configuration;
-using Google.Apis.Services;
-using Google.Apis.Sheets.v4;
+﻿// // --------------------------------------------------------------------------------------------------------------------
+// // <copyright file="noor.alam.shuvo@gmail.com" company="">
+// //   Copyright @ 2017
+// // </copyright>
+// <summary>
+// // </summary>
+// // --------------------------------------------------------------------------------------------------------------------
 
 namespace AutoHourLogger
 {
+    using System;
+    using System.Configuration;
+    using Google.Apis.Services;
+    using Google.Apis.Sheets.v4;
+
     internal class Program
     {
         private static void Main(string[] args)
@@ -17,7 +25,6 @@ namespace AutoHourLogger
                 var dateFormat = ConfigurationManager.AppSettings["DateFormat"];
                 var timeToWrite = ConfigurationManager.AppSettings["Time"];
 
-
                 var searchValue = DateTime.Now.ToString(dateFormat);
 
                 TimeSpan time;
@@ -28,26 +35,25 @@ namespace AutoHourLogger
 
                 var whatTowrite = time;
 
-
-                string[] scopes = {SheetsService.Scope.Spreadsheets};
+                string[] scopes = { SheetsService.Scope.Spreadsheets };
                 var ApplicationName = "Google Sheet Auto Hour Logger";
 
                 var credential = UserAuthentication.Authenticate(scopes);
 
                 // Create Google Sheets API service.
-                var service = new SheetsService(new BaseClientService.Initializer
-                {
-                    HttpClientInitializer = credential,
-                    ApplicationName = ApplicationName
-                });
-
+                var service =
+                    new SheetsService(
+                        new BaseClientService.Initializer
+                            {
+                                HttpClientInitializer = credential,
+                                ApplicationName = ApplicationName
+                            });
 
                 // Read data and find the cell with search text.
 
                 var dataReader = new SheetDataReader(service, spreadsheetId, sheetName, range);
                 var sheetDataTask = dataReader.ReadDataAsync();
                 var sheetData = sheetDataTask.Result;
-
 
                 if (sheetData != null)
                 {
